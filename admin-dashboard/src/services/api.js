@@ -4,7 +4,7 @@ const api = {
   async makeRequest(endpoint, options = {}) {
     try {
       const url = `${API_URL}/api${endpoint}`;
-      
+
       const config = {
         method: options.method || 'GET',
         headers: {
@@ -14,7 +14,7 @@ const api = {
         ...options,
       };
 
-      // Add auth token
+      // Tambahkan auth token jika tersedia
       const token = localStorage.getItem('auth_token');
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
@@ -34,7 +34,8 @@ const api = {
     }
   },
 
-  // Auth
+  // ─── AUTH ──────────────────────────────────────────────────────────────────
+
   async login(username, password) {
     return this.makeRequest('/auth/login', {
       method: 'POST',
@@ -42,9 +43,18 @@ const api = {
     });
   },
 
-  // Bahan
+  async getMe() {
+    return this.makeRequest('/auth/me');
+  },
+
+  // ─── BAHAN ─────────────────────────────────────────────────────────────────
+
   async getBahanList() {
     return this.makeRequest('/bahan');
+  },
+
+  async getBahan(id) {
+    return this.makeRequest(`/bahan/${id}`);
   },
 
   async bulkUploadBahan(bahanArray, duplicateMode = 'merge') {
@@ -60,6 +70,8 @@ const api = {
       body: JSON.stringify({ ids }),
     });
   },
+
+  // ─── USERS ─────────────────────────────────────────────────────────────────
 
   async getUsers() {
     return this.makeRequest('/users');

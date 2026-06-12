@@ -1,0 +1,16 @@
+{
+  "name": "bansos-netflix-extension",
+  "version": "1.0.0",
+  "description": "Browser extension untuk generate Netflix token dan mengelola bahan secara aman",
+  "scripts": {
+    "build": "echo 'Extension is ready to load'",
+    "start": "echo 'Open chrome://extensions and load unpacked from extension/src directory'"
+  },
+  "keywords": [
+    "netflix",
+    "browser-extension",
+    "token-generator"
+  ],
+  "author": "Rendyprobe",
+  "license": "MIT"
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Bansos Netflix</title>
+  <link rel="stylesheet" href="../styles/login.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <h1 class="logo">🎬 Bansos Netflix</h1>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            placeholder="Enter your username" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            placeholder="Enter your password" 
+            required
+          >
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+
+        <button type="submit" class="btn-primary">Login</button>
+      </form>
+
+      <div class="login-info">
+        <p>Don't have an account?</p>
+        <p style="font-size: 0.85rem; color: #666;">Contact admin to create your account</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../services/storage.js"></script>
+  <script src="../services/api.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

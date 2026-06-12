@@ -1,0 +1,170 @@
+@import 'popup.css';
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #b20710 100%);
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0;
+}
+
+.header h1 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-section span {
+  font-size: 0.85rem;
+}
+
+.btn-logout {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.3s;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.bahan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bahan-item {
+  background: #f9f9f9;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px;
+  transition: all 0.3s;
+}
+
+.bahan-item:hover {
+  background: #f0f0f0;
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 6px rgba(229, 9, 20, 0.1);
+}
+
+.bahan-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.bahan-item-title {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.bahan-item-date {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.bahan-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-generate {
+  flex: 1;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-generate:hover {
+  background: #b20710;
+}
+
+.btn-generate:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-copy {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.3s;
+}
+
+.btn-copy:hover {
+  background: #218838;
+}
+
+.token-display {
+  margin-bottom: 15px;
+}
+
+#token-content {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  resize: vertical;
+}
+
+.modal {
+  display: flex;
+}
+
+.modal.show {
+  display: flex;
+}

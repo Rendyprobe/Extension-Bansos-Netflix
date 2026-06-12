@@ -11,6 +11,8 @@ function FileManagement() {
   const [success, setSuccess] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [duplicateMode, setDuplicateMode] = useState('merge');
+  const [uploadCount, setUploadCount] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     loadFiles();
@@ -29,24 +31,31 @@ function FileManagement() {
     }
   };
 
-  const handleFileUpload = async (event) => {
-    const uploadedFiles = event.target.files;
-    if (!uploadedFiles.length) return;
+  const uploadFiles = async (fileList) => {
+    const uploadedFiles = Array.from(fileList);
+    if (!uploadedFiles.length || uploading) return;
+
+    const invalidFiles = uploadedFiles.filter(file =>
+      !file.name.toLowerCase().endsWith('.txt'),
+    );
+    if (invalidFiles.length > 0) {
+      setError(`Hanya file .txt yang diperbolehkan: ${invalidFiles.map(file => file.name).join(', ')}`);
+      setSuccess('');
+      return;
+    }
 
     try {
       setUploading(true);
+      setUploadCount(uploadedFiles.length);
       setError('');
       setSuccess('');
 
-      const bahanArray = [];
-      
-      for (let file of uploadedFiles) {
-        const content = await file.text();
-        bahanArray.push({
+      const bahanArray = await Promise.all(
+        uploadedFiles.map(async file => ({
           filename: file.name,
-          content: content,
-        });
-      }
+          content: await file.text(),
+        })),
+      );
 
       const response = await api.bulkUploadBahan(bahanArray, duplicateMode);
       const { inserted = 0, merged = 0, replaced = 0, skipped = 0 } = response.summary || {};
@@ -54,16 +63,24 @@ function FileManagement() {
         `Selesai: ${inserted} baru, ${merged} digabung, ${replaced} diganti, ${skipped} dilewati.`,
       );
       
-      // Reload files
       await loadFiles();
-      
-      // Clear input
-      event.target.value = '';
     } catch (err) {
       setError('Upload failed: ' + err.message);
     } finally {
       setUploading(false);
+      setUploadCount(0);
     }
+  };
+
+  const handleFileUpload = async (event) => {
+    await uploadFiles(event.target.files);
+    event.target.value = '';
+  };
+
+  const handleDrop = async (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+    await uploadFiles(event.dataTransfer.files);
   };
 
   const handleToggleSelect = (id) => {
@@ -129,7 +146,20 @@ function FileManagement() {
               <option value="replace">Ganti isi file lama</option>
             </select>
           </div>
-          <div className="upload-area">
+          <div
+            className={`upload-area${isDragging ? ' is-dragging' : ''}`}
+            onDragEnter={(event) => {
+              event.preventDefault();
+              if (!uploading) setIsDragging(true);
+            }}
+            onDragOver={(event) => event.preventDefault()}
+            onDragLeave={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setIsDragging(false);
+              }
+            }}
+            onDrop={handleDrop}
+          >
             <label className="upload-label">
               <input
                 type="file"
@@ -140,11 +170,15 @@ function FileManagement() {
               />
               <div className="upload-content">
                 <span className="upload-icon">📁</span>
-                <p>Click to select files or drag and drop</p>
-                <small>Hanya file .txt. Pencocokan nama tidak membedakan huruf besar/kecil.</small>
+                <p>Pilih atau jatuhkan banyak file TXT sekaligus</p>
+                <small>Gunakan Ctrl+A atau Shift untuk memilih banyak file. Nama file dicocokkan tanpa membedakan huruf besar/kecil.</small>
               </div>
             </label>
-            {uploading && <div className="uploading">Uploading...</div>}
+            {uploading && (
+              <div className="uploading">
+                Mengunggah {uploadCount} file...
+              </div>
+            )}
           </div>
         </div>
 

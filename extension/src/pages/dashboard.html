@@ -19,38 +19,49 @@
 
     <!-- Main Content -->
     <div class="content">
-      <!-- Search Bar -->
-      <div class="search-bar">
-        <input 
-          type="text" 
-          id="search-input" 
-          placeholder="Search bahan..." 
-        >
-      </div>
 
-      <!-- Bahan List -->
-      <div class="bahan-list" id="bahan-list">
-        <div class="loading">Loading bahan...</div>
-      </div>
-
-      <!-- Error Message -->
-      <div id="error-message" class="error-message"></div>
-    </div>
-
-    <!-- Generate Token Modal -->
-    <div id="token-modal" class="modal hidden">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Generated Token</h2>
-          <button class="btn-close" id="modal-close">&times;</button>
+      <!-- Status Card -->
+      <div class="status-card" id="status-card">
+        <div class="status-idle" id="status-idle">
+          <div class="status-icon">📦</div>
+          <p class="status-text">Belum ada bahan dipilih</p>
+          <p class="status-sub">Klik <strong>Ambil Bahan</strong> untuk mulai</p>
         </div>
-        <div class="modal-body">
-          <div class="token-display">
-            <textarea id="token-content" readonly></textarea>
+
+        <div class="status-loaded hidden" id="status-loaded">
+          <div class="status-icon">✅</div>
+          <p class="status-label">Bahan aktif:</p>
+          <p class="bahan-name" id="bahan-name">—</p>
+          <div class="exp-badge" id="exp-badge">
+            <span class="exp-icon">📅</span>
+            <span id="exp-text">Exp: —</span>
           </div>
-          <button id="copy-token-btn" class="btn-primary">Copy to Clipboard</button>
         </div>
       </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button id="btn-ambil" class="btn-action btn-ambil">
+          <span class="btn-icon">🎲</span>
+          <span class="btn-label">Ambil Bahan</span>
+        </button>
+        <button id="btn-generate" class="btn-action btn-generate" disabled>
+          <span class="btn-icon">🔗</span>
+          <span class="btn-label">Generate URL</span>
+        </button>
+      </div>
+
+      <!-- Result Box -->
+      <div class="result-box hidden" id="result-box">
+        <div class="result-header">
+          <span class="result-title" id="result-title">URL Generated</span>
+          <button id="btn-copy" class="btn-copy-inline">Copy</button>
+        </div>
+        <div class="result-content" id="result-content"></div>
+      </div>
+
+      <!-- Error -->
+      <div id="error-message" class="error-message"></div>
     </div>
   </div>
 

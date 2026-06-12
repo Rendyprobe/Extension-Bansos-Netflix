@@ -23,6 +23,32 @@
   color: var(--text-color);
 }
 
+.duplicate-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 13px 15px;
+  border: 1px solid #e6e6e6;
+  border-radius: 7px;
+  background: #fafafa;
+}
+
+.duplicate-setting label {
+  color: #444;
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.duplicate-setting select {
+  min-width: 210px;
+  padding: 9px 11px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: white;
+}
+
 .upload-area {
   position: relative;
 }
@@ -222,5 +248,14 @@
 
   .search-input {
     min-width: auto;
+  }
+
+  .duplicate-setting {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .duplicate-setting select {
+    width: 100%;
   }
 }

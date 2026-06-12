@@ -2,10 +2,10 @@
  * API Service untuk komunikasi dengan backend
  */
 
-export const api = {
+const api = {
   async getApiUrl() {
     const result = await chrome.storage.local.get('api_url');
-    return result.api_url || 'https://localhost:5000';
+    return result.api_url || 'https://bansos-netflix-api.25051204307.workers.dev';
   },
 
   async makeRequest(endpoint, options = {}) {

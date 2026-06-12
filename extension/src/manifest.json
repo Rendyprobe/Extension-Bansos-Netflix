@@ -1,27 +1,16 @@
 {
   "manifest_version": 3,
   "name": "Bansos Netflix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Browser extension untuk generate Netflix token dan mengelola bahan secara aman",
-  "icons": {
-    "16": "public/icon16.png",
-    "48": "public/icon48.png",
-    "128": "public/icon128.png"
-  },
   "action": {
-    "default_popup": "src/popup.html",
+    "default_popup": "popup.html",
     "default_title": "Bansos Netflix"
   },
   "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
+    "storage"
   ],
   "host_permissions": [
-    "https://localhost:5000/*",
-    "https://api.yourdomain.com/*"
-  ],
-  "background": {
-    "service_worker": "src/background.js"
-  }
+    "https://bansos-netflix-api.25051204307.workers.dev/*"
+  ]
 }

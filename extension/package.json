@@ -1,6 +1,6 @@
 {
   "name": "bansos-netflix-extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Browser extension untuk generate Netflix token dan mengelola bahan secara aman",
   "scripts": {
     "build": "echo 'Extension is ready to load'",

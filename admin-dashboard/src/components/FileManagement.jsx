@@ -10,6 +10,7 @@ function FileManagement() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [duplicateMode, setDuplicateMode] = useState('merge');
 
   useEffect(() => {
     loadFiles();
@@ -47,8 +48,11 @@ function FileManagement() {
         });
       }
 
-      await api.bulkUploadBahan(bahanArray);
-      setSuccess(`${bahanArray.length} file(s) uploaded successfully!`);
+      const response = await api.bulkUploadBahan(bahanArray, duplicateMode);
+      const { inserted = 0, merged = 0, replaced = 0, skipped = 0 } = response.summary || {};
+      setSuccess(
+        `Selesai: ${inserted} baru, ${merged} digabung, ${replaced} diganti, ${skipped} dilewati.`,
+      );
       
       // Reload files
       await loadFiles();
@@ -112,6 +116,19 @@ function FileManagement() {
         {/* Upload Section */}
         <div className="upload-section">
           <h2>Upload Files</h2>
+          <div className="duplicate-setting">
+            <label htmlFor="duplicate-mode">Jika nama file sudah ada</label>
+            <select
+              id="duplicate-mode"
+              value={duplicateMode}
+              onChange={(event) => setDuplicateMode(event.target.value)}
+              disabled={uploading}
+            >
+              <option value="merge">Gabungkan isi file</option>
+              <option value="skip">Lewati file baru</option>
+              <option value="replace">Ganti isi file lama</option>
+            </select>
+          </div>
           <div className="upload-area">
             <label className="upload-label">
               <input
@@ -124,7 +141,7 @@ function FileManagement() {
               <div className="upload-content">
                 <span className="upload-icon">📁</span>
                 <p>Click to select files or drag and drop</p>
-                <small>Only .txt files allowed</small>
+                <small>Hanya file .txt. Pencocokan nama tidak membedakan huruf besar/kecil.</small>
               </div>
             </label>
             {uploading && <div className="uploading">Uploading...</div>}

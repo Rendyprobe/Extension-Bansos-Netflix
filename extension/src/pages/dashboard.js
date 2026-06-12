@@ -1,9 +1,9 @@
 /**
  * Dashboard Page Script
+ * Flow: Ambil Bahan → tampil info exp → Generate URL → tampil URL
  */
 
-let allBahan = [];
-let filteredBahan = [];
+let currentBahan = null; // bahan yang sedang aktif
 
 document.addEventListener('DOMContentLoaded', async () => {
   await initDashboard();
@@ -11,24 +11,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function initDashboard() {
   try {
-    // Check if user is logged in
     const token = await chrome.storage.local.get('auth_token');
     if (!token.auth_token) {
       window.location.href = 'login.html';
       return;
     }
 
-    // Get current user
     await loadUserInfo();
-
-    // Load bahan list
-    await loadBahanList();
-
-    // Setup event listeners
     setupEventListeners();
   } catch (error) {
     console.error('Dashboard init error:', error);
-    showError('Failed to load dashboard');
+    showError('Gagal memuat dashboard');
   }
 }
 
@@ -43,149 +36,183 @@ async function loadUserInfo() {
   }
 }
 
-async function loadBahanList() {
+// ─── Ambil Bahan ─────────────────────────────────────────────────────────────
+
+async function ambilBahan() {
+  const btn = document.getElementById('btn-ambil');
+  setButtonLoading(btn, '⏳ Mengambil...');
+  hideResult();
+  hideError();
+
   try {
-    const bahanListDiv = document.getElementById('bahan-list');
-    bahanListDiv.innerHTML = '<div class="loading">Loading bahan...</div>';
+    // Ambil semua bahan dari database, pilih random satu yang valid
+    const bahanList = await window.api.getBahanList();
 
-    const response = await window.api.getBahanList();
-    allBahan = response;
-    filteredBahan = response;
+    if (!bahanList || bahanList.length === 0) {
+      showError('Tidak ada bahan tersedia di database.');
+      return;
+    }
 
-    renderBahanList();
+    // Filter bahan yang masih aktif (exp setelah hari ini)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const validBahan = bahanList.filter(b => {
+      if (!b.exp_date) return true; // jika tidak ada exp_date, anggap valid
+      const exp = new Date(b.exp_date);
+      return exp >= today;
+    });
+
+    if (validBahan.length === 0) {
+      showError('Semua bahan sudah expired. Hubungi admin.');
+      return;
+    }
+
+    // Pilih secara random
+    const picked = validBahan[Math.floor(Math.random() * validBahan.length)];
+    currentBahan = picked;
+
+    // Tampilkan info bahan
+    showBahanInfo(picked);
+
+    // Aktifkan tombol Generate URL
+    document.getElementById('btn-generate').disabled = false;
+
   } catch (error) {
-    console.error('Failed to load bahan:', error);
-    showError(error.message || 'Failed to load bahan list');
-    document.getElementById('bahan-list').innerHTML = '';
+    console.error('Ambil bahan error:', error);
+    showError(error.message || 'Gagal mengambil bahan dari database.');
+  } finally {
+    setButtonNormal(btn, '🎲', 'Ambil Bahan');
   }
 }
 
-function renderBahanList() {
-  const bahanListDiv = document.getElementById('bahan-list');
+function showBahanInfo(bahan) {
+  document.getElementById('status-idle').classList.add('hidden');
+  document.getElementById('status-loaded').classList.remove('hidden');
 
-  if (filteredBahan.length === 0) {
-    bahanListDiv.innerHTML = '<div class="loading">No bahan found</div>';
+  // Nama bahan
+  const nameEl = document.getElementById('bahan-name');
+  nameEl.textContent = bahan.filename || bahan.name || `Bahan #${bahan.id}`;
+
+  // Tanggal exp
+  const expEl = document.getElementById('exp-text');
+  const badgeEl = document.getElementById('exp-badge');
+
+  if (bahan.exp_date) {
+    const expDate = new Date(bahan.exp_date);
+    const diffDays = Math.ceil((expDate - new Date()) / (1000 * 60 * 60 * 24));
+
+    const formattedDate = expDate.toLocaleDateString('id-ID', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+
+    expEl.textContent = `Exp: ${formattedDate}`;
+
+    // Warnai badge berdasarkan sisa hari
+    badgeEl.className = 'exp-badge';
+    if (diffDays <= 3) badgeEl.classList.add('exp-critical');
+    else if (diffDays <= 7) badgeEl.classList.add('exp-warning');
+    else badgeEl.classList.add('exp-ok');
+
+  } else {
+    expEl.textContent = 'Exp: Tidak diketahui';
+    badgeEl.className = 'exp-badge exp-unknown';
+  }
+}
+
+// ─── Generate URL ─────────────────────────────────────────────────────────────
+
+async function generateUrl() {
+  if (!currentBahan) {
+    showError('Ambil bahan dulu sebelum generate URL.');
     return;
   }
 
-  bahanListDiv.innerHTML = filteredBahan.map(bahan => `
-    <div class="bahan-item">
-      <div class="bahan-item-header">
-        <div>
-          <div class="bahan-item-title">${escapeHtml(bahan.filename)}</div>
-          <div class="bahan-item-date">${new Date(bahan.upload_date).toLocaleDateString()}</div>
-        </div>
-      </div>
-      <div class="bahan-item-actions">
-        <button class="btn-generate" onclick="generateToken(${bahan.id})">
-          Generate Token
-        </button>
-      </div>
-    </div>
-  `).join('');
-}
+  const btn = document.getElementById('btn-generate');
+  setButtonLoading(btn, '⏳ Generating...');
+  hideResult();
+  hideError();
 
-async function generateToken(bahanId) {
   try {
-    const btn = event.target;
-    btn.disabled = true;
-    btn.textContent = 'Generating...';
+    const response = await window.api.generateToken(currentBahan.id);
 
-    const response = await window.api.generateToken(bahanId);
-    
-    // Show modal dengan token/content
-    const modal = document.getElementById('token-modal');
-    const tokenContent = document.getElementById('token-content');
-    tokenContent.value = response.content;
-    
-    modal.classList.remove('hidden');
-    modal.classList.add('show');
+    // response.content berisi URL / token yang dihasilkan
+    const urlContent = response.content || response.url || response.token || JSON.stringify(response);
 
-    btn.disabled = false;
-    btn.textContent = 'Generate Token';
+    showResult('🔗 URL Generated', urlContent);
+
   } catch (error) {
-    console.error('Generate token error:', error);
-    showError(error.message || 'Failed to generate token');
-    event.target.disabled = false;
-    event.target.textContent = 'Generate Token';
+    console.error('Generate URL error:', error);
+    showError(error.message || 'Gagal generate URL.');
+  } finally {
+    setButtonNormal(btn, '🔗', 'Generate URL');
   }
 }
 
-function setupEventListeners() {
-  // Logout button
-  document.getElementById('logout-btn').addEventListener('click', logout);
+// ─── Result Display ───────────────────────────────────────────────────────────
 
-  // Search input
-  document.getElementById('search-input').addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-    filteredBahan = allBahan.filter(bahan => 
-      bahan.filename.toLowerCase().includes(query)
-    );
-    renderBahanList();
-  });
-
-  // Modal close button
-  document.getElementById('modal-close').addEventListener('click', closeModal);
-
-  // Copy token button
-  document.getElementById('copy-token-btn').addEventListener('click', copyToken);
-
-  // Close modal when clicking outside
-  document.getElementById('token-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'token-modal') {
-      closeModal();
-    }
-  });
+function showResult(title, content) {
+  const box = document.getElementById('result-box');
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-content').textContent = content;
+  box.classList.remove('hidden');
 }
 
-async function logout() {
+function hideResult() {
+  document.getElementById('result-box').classList.add('hidden');
+}
+
+async function copyResult() {
   try {
-    await chrome.storage.local.clear();
-    window.location.href = 'login.html';
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
-}
+    const content = document.getElementById('result-content').textContent;
+    await navigator.clipboard.writeText(content);
 
-function closeModal() {
-  const modal = document.getElementById('token-modal');
-  modal.classList.add('hidden');
-  modal.classList.remove('show');
-}
-
-async function copyToken() {
-  try {
-    const tokenContent = document.getElementById('token-content');
-    await navigator.clipboard.writeText(tokenContent.value);
-    
-    const btn = document.getElementById('copy-token-btn');
-    const originalText = btn.textContent;
+    const btn = document.getElementById('btn-copy');
     btn.textContent = 'Copied!';
-    
+    btn.classList.add('copied');
     setTimeout(() => {
-      btn.textContent = originalText;
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
     }, 2000);
   } catch (error) {
-    console.error('Copy error:', error);
-    showError('Failed to copy to clipboard');
+    showError('Gagal copy ke clipboard.');
   }
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function setButtonLoading(btn, label) {
+  btn.disabled = true;
+  btn.querySelector('.btn-label').textContent = label;
+}
+
+function setButtonNormal(btn, icon, label) {
+  btn.disabled = false;
+  btn.querySelector('.btn-icon').textContent = icon;
+  btn.querySelector('.btn-label').textContent = label;
 }
 
 function showError(message) {
   const errorDiv = document.getElementById('error-message');
   errorDiv.textContent = message;
   errorDiv.classList.add('show');
-  
-  setTimeout(() => {
-    errorDiv.classList.remove('show');
-  }, 5000);
+  setTimeout(() => errorDiv.classList.remove('show'), 6000);
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+function hideError() {
+  document.getElementById('error-message').classList.remove('show');
 }
 
-// Make functions available globally
-window.generateToken = generateToken;
+async function logout() {
+  await chrome.storage.local.clear();
+  window.location.href = 'login.html';
+}
+
+// ─── Event Listeners ──────────────────────────────────────────────────────────
+
+function setupEventListeners() {
+  document.getElementById('btn-ambil').addEventListener('click', ambilBahan);
+  document.getElementById('btn-generate').addEventListener('click', generateUrl);
+  document.getElementById('btn-copy').addEventListener('click', copyResult);
+  document.getElementById('logout-btn').addEventListener('click', logout);
+}

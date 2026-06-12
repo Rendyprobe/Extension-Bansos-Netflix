@@ -1,0 +1,173 @@
+.user-management {
+  flex: 1;
+  padding: 20px;
+}
+
+.user-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.create-user-card,
+.user-list-card {
+  padding: 30px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.create-user-card {
+  margin-bottom: 24px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.section-heading h2 {
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+}
+
+.section-heading p {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.create-user-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 180px auto;
+  align-items: end;
+  gap: 16px;
+}
+
+.create-user-form label {
+  display: grid;
+  gap: 7px;
+  color: #444;
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.create-user-form input,
+.create-user-form select {
+  min-height: 42px;
+}
+
+.create-user-button {
+  min-height: 42px;
+  white-space: nowrap;
+}
+
+.user-table {
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+}
+
+.user-table-header,
+.user-table-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 140px 130px 140px;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+}
+
+.user-table-header {
+  background: #f7f7f8;
+  color: #555;
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+
+.user-table-row {
+  border-top: 1px solid var(--border-color);
+}
+
+.user-table-row > div {
+  display: grid;
+  gap: 3px;
+}
+
+.user-table-row small {
+  color: #888;
+}
+
+.role-badge {
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 750;
+  text-transform: capitalize;
+}
+
+.role-admin {
+  background: #fde8e9;
+  color: #b20710;
+}
+
+.role-user {
+  background: #e8eefb;
+  color: #315baf;
+}
+
+.user-active {
+  color: #198642;
+  font-weight: 700;
+}
+
+.user-inactive {
+  color: #8b8b8b;
+}
+
+.deactivate-button {
+  padding: 8px 10px;
+  background: #f7e4e5;
+  color: #a61d25;
+  font-weight: 700;
+}
+
+.deactivate-button:hover:not(:disabled) {
+  background: #efd0d2;
+}
+
+.deactivate-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 900px) {
+  .create-user-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .user-table-header {
+    display: none;
+  }
+
+  .user-table-row {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .user-management {
+    padding: 15px;
+  }
+
+  .create-user-card,
+  .user-list-card {
+    padding: 20px;
+  }
+
+  .create-user-form,
+  .user-table-row {
+    grid-template-columns: 1fr;
+  }
+}

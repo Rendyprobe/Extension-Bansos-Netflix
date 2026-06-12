@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import ExtensionInstall from './components/ExtensionInstall';
 import './App.css';
 
 function App() {
@@ -34,6 +35,18 @@ function App() {
     setUser(null);
     setIsLoggedIn(false);
   };
+
+  if (window.location.pathname === '/install') {
+    return (
+      <div className="app public-install-page">
+        <header className="public-header">
+          <a href="/">Bansos Netflix</a>
+          <span>Extension Installer</span>
+        </header>
+        <ExtensionInstall />
+      </div>
+    );
+  }
 
   if (loading) {
     return <div className="loading-screen">Loading...</div>;

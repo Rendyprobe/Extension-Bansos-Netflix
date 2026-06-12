@@ -1,0 +1,6 @@
+name = "bansos-netflix-api"
+main = "src/index.js"
+compatibility_date = "2026-06-12"
+
+[observability]
+enabled = true

@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://bansos-netflix-api.25051204307.workers.dev';
 
 const api = {
   async makeRequest(endpoint, options = {}) {
@@ -47,10 +47,10 @@ const api = {
     return this.makeRequest('/bahan');
   },
 
-  async bulkUploadBahan(bahanArray) {
+  async bulkUploadBahan(bahanArray, duplicateMode = 'merge') {
     return this.makeRequest('/bahan/bulk-upload', {
       method: 'POST',
-      body: JSON.stringify({ bahanArray }),
+      body: JSON.stringify({ bahanArray, duplicateMode }),
     });
   },
 
@@ -58,6 +58,23 @@ const api = {
     return this.makeRequest('/bahan/bulk-delete', {
       method: 'POST',
       body: JSON.stringify({ ids }),
+    });
+  },
+
+  async getUsers() {
+    return this.makeRequest('/users');
+  },
+
+  async createUser(user) {
+    return this.makeRequest('/users', {
+      method: 'POST',
+      body: JSON.stringify(user),
+    });
+  },
+
+  async deactivateUser(id) {
+    return this.makeRequest(`/users/${id}`, {
+      method: 'DELETE',
     });
   },
 };

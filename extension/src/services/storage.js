@@ -9,7 +9,7 @@ const STORAGE_KEYS = {
   PREFERENCES: 'preferences',
 };
 
-export const storage = {
+const storage = {
   // Auth token management
   async getToken() {
     return new Promise((resolve) => {
@@ -64,7 +64,7 @@ export const storage = {
   async getApiUrl() {
     return new Promise((resolve) => {
       chrome.storage.local.get(STORAGE_KEYS.API_URL, (data) => {
-        resolve(data[STORAGE_KEYS.API_URL] || 'https://api.yourdomain.com');
+        resolve(data[STORAGE_KEYS.API_URL] || 'https://bansos-netflix-api.25051204307.workers.dev');
       });
     });
   },

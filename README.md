@@ -2,7 +2,7 @@
 
 Repository ini berisi tiga aplikasi aktif:
 
-- `admin-dashboard`: dashboard React yang dideploy ke Cloudflare Pages.
+- `admin-dashboard`: dashboard React yang dideploy ke Cloudflare Pages, termasuk route `/hp` untuk pengguna HP.
 - `backend-worker`: API Cloudflare Worker yang terhubung ke PostgreSQL Neon.
 - `extension`: browser extension Manifest V3 untuk pengguna.
 
@@ -10,6 +10,7 @@ Repository ini berisi tiga aplikasi aktif:
 
 - Admin dashboard: https://bansos-netflix-admin.pages.dev
 - Installer extension: https://bansos-netflix-admin.pages.dev/install
+- Versi HP: https://bansosnetflix.my.id/hp
 - API health check: https://bansos-netflix-api.25051204307.workers.dev/health
 
 ## Admin Dashboard
@@ -34,6 +35,24 @@ VITE_EXTENSION_STORE_URL=
 ```
 
 Jangan commit file `.env`.
+
+Route publik:
+
+- `/install`: halaman download dan panduan install extension.
+- `/hp`: versi web untuk user HP dengan flow login, ambil bahan, generate URL.
+
+Deploy dari root repository:
+
+```bash
+npm run deploy
+```
+
+Hapus Cloudflare Pages project lama jika sempat membuat project web app
+terpisah:
+
+```bash
+npm run delete-unused-web-app-project
+```
 
 ## Cloudflare Worker
 
@@ -61,6 +80,12 @@ Untuk instalasi lokal:
 Paket ZIP yang disajikan dashboard berada di:
 
 `admin-dashboard/public/downloads/bansos-netflix-extension.zip`
+
+Regenerasi paket setelah source extension berubah:
+
+```bash
+cd extension && npm run package
+```
 
 ## Verifikasi
 

@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import '../styles/extension-install.css';
 
-const DOWNLOAD_URL = '/downloads/bansos-netflix-extension.zip';
+const EXTENSION_VERSION = '1.0.2';
+const DOWNLOAD_URL = `/downloads/bansos-netflix-extension.zip?v=${EXTENSION_VERSION}`;
+const HP_APP_URL = '/hp';
 const STORE_URL = import.meta.env.VITE_EXTENSION_STORE_URL;
 
 function detectBrowser() {
@@ -44,7 +46,7 @@ function ExtensionInstall() {
         <div className="install-card">
           <div className="install-summary">
             <div>
-              <h3>Versi 1.0.1</h3>
+              <h3>Versi {EXTENSION_VERSION}</h3>
               <p>Browser terdeteksi: {browser}</p>
             </div>
             <span className="status-badge">Siap diinstall</span>
@@ -71,6 +73,20 @@ function ExtensionInstall() {
               ikuti empat langkah berikut.
             </p>
           )}
+        </div>
+
+        <div className="install-card hp-web-card">
+          <div className="install-summary">
+            <div>
+              <h3>Versi HP</h3>
+              <p>Akses tanpa extension dari browser mobile.</p>
+            </div>
+            <span className="status-badge hp-web">Web ready</span>
+          </div>
+
+          <a className="install-secondary-button" href={HP_APP_URL}>
+            Buka Versi HP
+          </a>
         </div>
 
         {!STORE_URL && (

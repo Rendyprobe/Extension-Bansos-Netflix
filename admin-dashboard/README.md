@@ -6,7 +6,8 @@ Dashboard React untuk:
 - upload, gabung, ganti, atau melewati file dengan nama yang sama;
 - menghapus file;
 - membuat dan menonaktifkan user;
-- menyediakan halaman dan ZIP installer extension.
+- menyediakan halaman dan ZIP installer extension;
+- menyediakan route `/hp` untuk pengguna HP.
 
 ## Development
 
@@ -31,6 +32,12 @@ npm run build
 
 Output build berada di `dist` dan tidak dilacak Git.
 
+Route production:
+
+- `/`: admin dashboard.
+- `/install`: installer extension.
+- `/hp`: versi web pengguna HP.
+
 ## Deploy
 
 ```bash
@@ -46,4 +53,9 @@ ZIP extension yang tersedia pada halaman `/install` berada di:
 
 `public/downloads/bansos-netflix-extension.zip`
 
-Regenerasi ZIP setiap source extension berubah.
+Regenerasi ZIP setiap source extension berubah:
+
+```bash
+cd ../extension
+npm run package
+```

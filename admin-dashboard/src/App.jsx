@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ExtensionInstall from './components/ExtensionInstall';
+import HpApp from './pages/HpApp';
 import './App.css';
 
 function App() {
@@ -36,7 +37,13 @@ function App() {
     setIsLoggedIn(false);
   };
 
-  if (window.location.pathname === '/install') {
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+
+  if (path === '/hp') {
+    return <HpApp />;
+  }
+
+  if (path === '/install') {
     return (
       <div className="app public-install-page">
         <header className="public-header">

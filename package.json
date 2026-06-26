@@ -1,0 +1,10 @@
+{
+  "name": "extension-bansos-netflix",
+  "private": true,
+  "scripts": {
+    "admin:build": "npm --prefix admin-dashboard run build",
+    "admin:dev": "npm --prefix admin-dashboard run dev -- --host 0.0.0.0",
+    "deploy": "npm --prefix admin-dashboard run deploy",
+    "delete-unused-web-app-project": "npx --prefix admin-dashboard wrangler pages project delete bansos-netflix-web-app --yes"
+  }
+}

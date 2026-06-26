@@ -65,6 +65,11 @@
   margin-bottom: 20px;
 }
 
+.hp-web-card {
+  border-color: #dbe7f5;
+  background: #f8fbff;
+}
+
 .install-summary {
   display: flex;
   align-items: center;
@@ -87,20 +92,39 @@
   font-weight: 700;
 }
 
-.install-primary-button {
+.status-badge.hp-web {
+  background: #e8f1fb;
+  color: #1768ac;
+}
+
+.install-primary-button,
+.install-secondary-button {
   display: block;
   width: 100%;
   padding: 14px 20px;
   border-radius: 7px;
-  background: var(--primary-color);
-  color: white;
   font-weight: 750;
   text-align: center;
   text-decoration: none;
 }
 
+.install-primary-button {
+  background: var(--primary-color);
+  color: white;
+}
+
 .install-primary-button:hover {
   background: #b20710;
+}
+
+.install-secondary-button {
+  border: 1px solid #1768ac;
+  background: #1768ac;
+  color: white;
+}
+
+.install-secondary-button:hover {
+  background: #0d4f88;
 }
 
 .install-notice {
